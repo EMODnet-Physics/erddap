@@ -254,9 +254,14 @@ public class EDVTimeStamp extends EDV {
             combinedAttributes.set("_FillValue", new DoubleArray(new double[]{destinationFillValue}));
 
         {
-            //String2.log(">> combinedAtts=\n" + combinedAttributes.toString());
 
-            //1st priority: actual_range
+            //1rd priority: data_min data_max
+            String tMin = combinedAttributes.getString("data_min");
+            String tMax = combinedAttributes.getString("data_max");
+            if (destinationMin.isMissingValue() && tMin != null && tMin.length() > 0) destinationMin = PAOne.fromDouble(sourceTimeToEpochSeconds(tMin));
+            if (destinationMax.isMissingValue() && tMax != null && tMax.length() > 0) destinationMax = PAOne.fromDouble(sourceTimeToEpochSeconds(tMax));
+            
+            //2st priority: actual_range
             PrimitiveArray actualRange = combinedAttributes.get("actual_range");
             if (actualRange != null) {
             //String2.log(">>destMin=" + destinationMin + " max=" + destinationMax + " sourceTimeIsNumeric=" + sourceTimeIsNumeric);
@@ -269,15 +274,9 @@ public class EDVTimeStamp extends EDV {
                 }
             }
 
-            //2nd priority: actual_min actual_max
-            String tMin = combinedAttributes.getString("actual_min");
-            String tMax = combinedAttributes.getString("actual_max");
-            if (destinationMin.isMissingValue() && tMin != null && tMin.length() > 0) destinationMin = PAOne.fromDouble(sourceTimeToEpochSeconds(tMin));
-            if (destinationMax.isMissingValue() && tMax != null && tMax.length() > 0) destinationMax = PAOne.fromDouble(sourceTimeToEpochSeconds(tMax));
-
-            //3rd priority: data_min data_max
-            tMin = combinedAttributes.getString("data_min");
-            tMax = combinedAttributes.getString("data_max");
+            //3nd priority: actual_min actual_max
+            tMin = combinedAttributes.getString("actual_min");
+            tMax = combinedAttributes.getString("actual_max");
             if (destinationMin.isMissingValue() && tMin != null && tMin.length() > 0) destinationMin = PAOne.fromDouble(sourceTimeToEpochSeconds(tMin));
             if (destinationMax.isMissingValue() && tMax != null && tMax.length() > 0) destinationMax = PAOne.fromDouble(sourceTimeToEpochSeconds(tMax));
 
